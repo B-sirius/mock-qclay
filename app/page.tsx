@@ -29,21 +29,49 @@ export default function Home() {
     const menuItems = menuContainerRef.current?.querySelectorAll(".menu-item");
     if (menuItems) {
       menuItems.forEach((menuItem) => {
+        const width = menuItem.clientWidth;
+        const height = menuItem.clientHeight;
+        const centerX = width / 2;
+        const centerY = height / 2;
+
+        const menuItemWrapper = menuItem.querySelector(
+          ".menu-item-wrapper"
+        ) as HTMLDivElement;
+
+        const xTo = gsap.quickTo(menuItemWrapper, "x", {
+          duration: 0.1,
+          ease: "power3",
+        });
+        const yTo = gsap.quickTo(menuItemWrapper, "y", {
+          duration: 0.1,
+          ease: "power3",
+        });
+
         menuItem.addEventListener("mouseenter", () => {
-          console.log("enter");
           gsap.to(pointerRef.current, {
             duration: 0.3,
             scale: 6,
             ease: "power3",
           });
         });
+        menuItem.addEventListener("mousemove", (event) => {
+          const e = event as MouseEvent;
+          const { offsetX, offsetY } = e;
+          const shiftXPercent = (offsetX - centerX) / centerX;
+          const shiftYPercent = (offsetY - centerY) / centerY;
+          const xShift = shiftXPercent * 8;
+          const yShift = shiftYPercent * 3;
+          xTo(xShift);
+          yTo(yShift);
+        });
         menuItem.addEventListener("mouseleave", () => {
-          console.log("leave");
           gsap.to(pointerRef.current, {
             duration: 0.3,
             scale: 1,
             ease: "power3",
           });
+          xTo(0);
+          yTo(0);
         });
       });
     }
@@ -58,11 +86,8 @@ export default function Home() {
           className="flex justify-between font-sans text-19 font-normal w-[32.1875rem]"
         >
           {["Home", "About", "Works", "Contact us"].map((value) => (
-            <div
-              className="relative menu-item group overflow-hidden cursor-pointer"
-              key={value}
-            >
-              <div className="menu-item-wrapper">
+            <div className=" menu-item group  cursor-pointer" key={value}>
+              <div className="relative menu-item-wrapper overflow-hidden">
                 <div className="flex flex-col group-hover:translate-y-[-150%] transition duration-500 ease-out">
                   <span>{value}</span>
                   <span className="absolute top-[150%]">{value}</span>
