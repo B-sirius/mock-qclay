@@ -62,7 +62,7 @@ export const Header = ({
     });
   });
   return (
-    <header className="fixed w-full flex justify-between px-12.5 pt-12 pb-3">
+    <header className="fixed w-full flex justify-between px-12.5 pt-12 pb-3 z-10">
       <div>Logo</div>
       <div
         ref={menuContainerRef}
